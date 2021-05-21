@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MADSCalculator</string>
+    <string name="calculator_label">Calculator</string>
+    <string name="ac_btn_text">AC</string>
 </resources>
