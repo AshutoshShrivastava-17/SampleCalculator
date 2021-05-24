@@ -21,4 +21,12 @@
         <item name="android:textSize">@dimen/text_size_28</item>
         <item name="android:gravity">center</item>
     </style>
+
+    <!-- BottomSheet crop prevention -->
+    <style name="DialogStyle" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:textColorHint">@color/grey_90</item>
+    </style>
 </resources>

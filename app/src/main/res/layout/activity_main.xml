@@ -1,271 +1,311 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.mads.sample.calculator.viewmodel.MainViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        tools:ignore="MissingConstraints"
-        app:contentInsetStart="@dimen/dimen_0">
+        android:layout_height="match_parent"
+        tools:context=".view.MainActivity">
 
-        <RelativeLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetStart="@dimen/dimen_0"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            tools:ignore="MissingConstraints">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey_5"
+                android:gravity="center_vertical"
+                android:padding="@dimen/dimen_15">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/calculator_label"
+                    android:textSize="@dimen/text_size_18"
+                    android:textStyle="bold"
+                    tools:ignore="RelativeOverlap" />
+
+                <ImageView
+                    android:id="@+id/history_btn"
+                    android:layout_width="@dimen/dimen_20"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="history"
+                    android:src="@drawable/ic_history"
+                    tools:ignore="HardcodedText" />
+
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_0"
+            app:layout_constraintBottom_toTopOf="@+id/button_layout"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:gravity="bottom|end"
+            android:textColor="@color/black"
+            android:paddingBottom="@dimen/dimen_20"
+            android:paddingEnd="10dp"
+            android:text="@={viewModel.mEnteredExpression}"
+            android:textSize="30sp"/>
+
+        <LinearLayout
+            android:id="@+id/button_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:background="@color/grey_5"
-            android:gravity="center_vertical"
-            android:padding="@dimen/dimen_15">
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dimen_20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/calculator_label"
-                android:textSize="@dimen/text_size_18"
-                android:textStyle="bold"
-                tools:ignore="RelativeOverlap" />
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/history_btn"
-                android:layout_width="@dimen/dimen_20"
+                <TextView
+                    android:id="@+id/btn_delete"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="@string/ac_btn_text"
+                    android:onClick="@{() -> viewModel.clearExpression()}"/>
+
+
+                <TextView
+                    android:id="@+id/btn_back"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="Ans"
+                    android:onClick="@{() -> viewModel.onAnsButtonTapped()}"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_history"
-                android:layout_alignParentEnd="true"
-                android:contentDescription="history"
-                tools:ignore="HardcodedText" />
+                android:orientation="horizontal">
 
-        </RelativeLayout>
-    </androidx.appcompat.widget.Toolbar>
+                <TextView
+                    android:id="@+id/btn_seven"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="7"
+                    android:textSize="@dimen/text_size_25"
+                    android:onClick="@{() -> viewModel.inputValue('7')}"/>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:paddingTop="@dimen/dimen_20"
-        android:background="@color/grey_5">
+                <TextView
+                    android:id="@+id/btn_eight"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="8"
+                    android:textSize="@dimen/text_size_25"
+                    android:onClick="@{() -> viewModel.inputValue('8')}"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/btn_nine"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="9"
+                    android:textSize="@dimen/text_size_25"
+                    android:onClick="@{() -> viewModel.inputValue('9')}"/>
 
-            <TextView
-                android:id="@+id/btn_delete"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/btn_multiple"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/grey_10"
+                    android:minHeight="@dimen/button_height"
+                    android:text="x"
+                    android:onClick="@{() -> viewModel.inputValue('x')}"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="@dimen/button_height"
-                android:text="@string/ac_btn_text" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btn_four"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="4"
+                    android:textSize="@dimen/text_size_25"
+                    android:onClick="@{() -> viewModel.inputValue('4')}"/>
+
+                <TextView
+                    android:id="@+id/btn_five"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="5"
+                    android:textSize="@dimen/text_size_25"
+                    android:onClick="@{() -> viewModel.inputValue('5')}"/>
+
+                <TextView
+                    android:id="@+id/btn_six"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="6"
+                    android:textSize="@dimen/text_size_25"
+                    android:onClick="@{() -> viewModel.inputValue('6')}"/>
+
+                <TextView
+                    android:id="@+id/btn_minus"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/grey_10"
+                    android:minHeight="@dimen/button_height"
+                    android:text="\u2014"
+                    android:onClick="@{() -> viewModel.inputValue('-')}"/>
+            </LinearLayout>
 
 
-            <TextView
-                android:id="@+id/btn_back"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="@dimen/button_height"
-                android:text="Ans" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btn_one"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="1"
+                    android:textSize="@dimen/text_size_25"
+                    android:onClick="@{() -> viewModel.inputValue('1')}"/>
+
+                <TextView
+                    android:id="@+id/btn_two"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="2"
+                    android:textSize="@dimen/text_size_25"
+                    android:onClick="@{() -> viewModel.inputValue('2')}"/>
+
+                <TextView
+                    android:id="@+id/btn_three"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="3"
+                    android:textSize="@dimen/text_size_25"
+                    android:onClick="@{() -> viewModel.inputValue('3')}"/>
+
+                <TextView
+                    android:id="@+id/btn_plus"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/grey_10"
+                    android:minHeight="@dimen/button_height"
+                    android:text="+"
+                    android:onClick="@{() -> viewModel.inputValue('+')}"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btn_dot"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="."
+                    android:textSize="25sp"
+                    android:onClick="@{() -> viewModel.inputValue('.')}"/>
+
+                <TextView
+                    android:id="@+id/btn_zero"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_height"
+                    android:text="0"
+                    android:textSize="25sp"
+                    android:onClick="@{() -> viewModel.inputValue('0')}"/>
+
+                <TextView
+                    android:id="@+id/btn_last_ans"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/grey_10"
+                    android:minHeight="@dimen/button_height"
+                    android:text="="
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:onClick="@{() -> viewModel.onEqualsTapped()}"/>
+
+                <TextView
+                    android:id="@+id/btn_equal"
+                    style="@style/textViewStyle"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/grey_10"
+                    android:minHeight="@dimen/button_height"
+                    android:text="/"
+                    android:onClick="@{() -> viewModel.inputValue('/')}"/>
+            </LinearLayout>
+
         </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/btn_seven"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="7"
-                android:textColor="#333"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_eight"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="8"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_nine"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="9"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_multiple"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="x"
-                android:background="@color/grey_10"/>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/btn_four"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="4"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_five"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="5"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_six"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="6"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_minus"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="\u2014"
-                android:background="@color/grey_10"/>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/btn_one"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="1"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_two"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="2"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_three"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="3"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_plus"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="+"
-                android:background="@color/grey_10"/>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/btn_dot"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="."
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_zero"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="0"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_last_ans"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="="
-                android:background="@color/grey_10"
-                android:textStyle="bold"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/btn_equal"
-                style="@style/textViewStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="80dp"
-                android:text="/"
-                android:background="@color/grey_10"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

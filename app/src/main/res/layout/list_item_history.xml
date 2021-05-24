@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/expression"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dimen_15"
+        android:paddingEnd="@dimen/dimen_15"
+        android:paddingTop="@dimen/dimen_5"
+        android:paddingBottom="@dimen/dimen_5"
+        android:layout_weight="1"
+        android:textColor="@color/grey_20"
+        android:textSize="@dimen/text_size_18"
+        android:text="5+7-4"
+        android:gravity="end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dimen_15"
+        android:paddingEnd="@dimen/dimen_15"
+        android:paddingBottom="@dimen/dimen_5"
+        android:layout_weight="1"
+        android:textColor="@color/grey_90"
+        android:textSize="@dimen/text_size_30"
+        android:textStyle="bold"
+        android:gravity="end"
+        android:text="10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/expression"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
