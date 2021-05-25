@@ -1,8 +1,9 @@
 package com.mads.sample.calculator.view;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel mMainViewModel;
     private BottomSheetDialog bottomSheetDialog;
     private RecyclerView historyRecyclerView;
+    private TextView noHistoryTextView;
+    private TextView historyLabel;
     private HistoryAdapter historyAdapter;
     private List<HistoryItem> mHistoryItems = new ArrayList<>();
 
@@ -55,22 +58,31 @@ public class MainActivity extends AppCompatActivity {
         public void onChanged(List<HistoryItem> historyItems) {
             mHistoryItems.clear();
             mHistoryItems.addAll(historyItems);
-            Log.v("####", "History items:" + historyItems);
             historyAdapter.notifyDataSetChanged();
         }
     };
 
     private void initHistoryBottomSheet() {
-        Log.v("####", "Showing history");
         historyAdapter = new HistoryAdapter(this, mHistoryItems);
         bottomSheetDialog = new BottomSheetDialog(this, R.style.DialogStyle);
         bottomSheetDialog.setContentView(R.layout.history_bottom_sheet);
         historyRecyclerView = bottomSheetDialog.findViewById(R.id.recycler_bottom_history);
+        noHistoryTextView = bottomSheetDialog.findViewById(R.id.no_history_tv);
+        historyLabel = bottomSheetDialog.findViewById(R.id.label);
         bottomSheetDialog.setOnShowListener(dialogInterface -> {
             BottomSheetDialog dialog = (BottomSheetDialog) dialogInterface;
             FrameLayout fl_bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
             assert fl_bottomSheet != null;
             BottomSheetBehavior.from(fl_bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+            if (mHistoryItems.size() > 0) {
+                historyRecyclerView.setVisibility(View.VISIBLE);
+                historyLabel.setVisibility(View.VISIBLE);
+                noHistoryTextView.setVisibility(View.GONE);
+            } else {
+                historyRecyclerView.setVisibility(View.GONE);
+                historyLabel.setVisibility(View.GONE);
+                noHistoryTextView.setVisibility(View.VISIBLE);
+            }
         });
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         historyRecyclerView.addItemDecoration(new DividerItemDecoration(this,

@@ -35,7 +35,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.SingleVi
     public HistoryAdapter(Activity context, List<HistoryItem> historyItems) {
         this.context = context;
         this.historyItems = historyItems;
-        Log.v("####","Setting adapter History items:"+historyItems);
     }
 
     @NonNull
@@ -49,17 +48,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.SingleVi
     @Override
     public void onBindViewHolder(@NonNull HistoryAdapter.SingleViewHolder singleViewHolder, int position) {
         HistoryItem historyItem = historyItems.get(position);
-        Log.v("####","Setting values"+historyItem.toString());
         singleViewHolder.textViewExpression.setText(historyItem.getExpression());
         singleViewHolder.textViewResult.setText(historyItem.getResult());
     }
 
     @Override
     public int getItemCount() {
-        Log.v("###","item count:"+historyItems.size());
         return historyItems.size();
     }
-
 
     @Override
     public long getItemId(int position) {

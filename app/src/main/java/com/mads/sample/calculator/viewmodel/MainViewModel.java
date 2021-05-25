@@ -1,8 +1,5 @@
 package com.mads.sample.calculator.viewmodel;
 
-import android.util.Log;
-
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -24,10 +21,6 @@ public class MainViewModel extends ViewModel {
         mLastTenOperations = new MutableLiveData<>();
     }
 
-    public LiveData<String> getExpression() {
-        return mEnteredExpression;
-    }
-
     public void clearExpression() {
         if (mEnteredExpression.getValue() != null && !mEnteredExpression.getValue().equals("")) {
             mEnteredExpression.setValue("");
@@ -39,12 +32,18 @@ public class MainViewModel extends ViewModel {
     }
 
     public void inputValue(char value) {
-        Log.v("####", "Pressed:" + value);
-        Log.v("####", "Expression:" + mEnteredExpression.getValue());
         if (mEnteredExpression.getValue() != null) {
-            if (!isCharAnOperator(mLastInputChar) || (isCharAnOperator(mLastInputChar) && !isCharAnOperator(value))) {
+            if (mEnteredExpression.getValue().equals("Can't divide by 0") || mEnteredExpression.getValue().equals("Invalid expression")) {
+                mEnteredExpression.setValue("");
+                if (value != 'x' && value != '+' && value != '/') {
+                    mEnteredExpression.setValue("" + value);
+                }
+            } else if (mEnteredExpression.getValue().equals("")) {
+                if (value != 'x' && value != '+' && value != '/') {
+                    mEnteredExpression.setValue("" + value);
+                }
+            } else if (!isCharAnOperator(mLastInputChar) || (isCharAnOperator(mLastInputChar) && !isCharAnOperator(value))) {
                 mEnteredExpression.setValue(mEnteredExpression.getValue().concat("" + value));
-                Log.v("####", "Updated strikng:" + mEnteredExpression.getValue());
             } else if (isCharAnOperator(mLastInputChar) && isCharAnOperator(value)) {
                 if (mLastInputChar != value) {
                     String substring = mEnteredExpression.getValue().substring(0, mEnteredExpression
@@ -63,11 +62,13 @@ public class MainViewModel extends ViewModel {
     public void onEqualsTapped() {
         if (mEnteredExpression.getValue() != null) {
             String result = calculate(mEnteredExpression.getValue());
-            Log.v("###", "Result:" + result);
-            if (!result.equals("Can't divide by 0")) {
+            if (!result.equals("Can't divide by 0") && !result.equals("Invalid expression")) {
                 mLastResult = result;
             }
             if (mLastTenOperations.getValue() != null) {
+                if (mLastTenOperations.getValue().size() == 10) {
+                    mLastTenOperations.getValue().remove(0);
+                }
                 mLastTenOperations.getValue().add(new HistoryItem(mEnteredExpression.getValue(), result));
                 mLastTenOperations.setValue(mLastTenOperations.getValue());
             } else {
@@ -80,7 +81,6 @@ public class MainViewModel extends ViewModel {
     }
 
     public void onAnsButtonTapped() {
-        Log.v("####", "OnAnsTapped,LastAns was:" + mLastResult);
         if (mLastResult != null) {
             mEnteredExpression.setValue(mLastResult);
         } else {
@@ -97,13 +97,9 @@ public class MainViewModel extends ViewModel {
         int m = 0;
         StringBuilder stringBuilder = new StringBuilder();
         while (m < expression.length()) {
-            System.out.println("Char at " + m + " is:" + expression.charAt(m));
-            System.out.println("Is this char operator:" + isCharAnOperator(expression.charAt(m)));
             if (!isCharAnOperator(expression.charAt(m)) || (isCharAnOperator(expression.charAt(m)) && m == 0) ||
                     isCharAnOperator(expression.charAt(m)) && (expression.charAt(m - 1) == 'x' || expression.charAt(m - 1) == '/')) {
-                System.out.println("Not an operator therefore appending");
                 stringBuilder.append(expression.charAt(m));
-                System.out.println("String builder till now:" + stringBuilder.toString());
                 if (m == expression.length() - 1) {
                     strings.add(stringBuilder.toString());
                     stringBuilder.setLength(0);
@@ -112,16 +108,12 @@ public class MainViewModel extends ViewModel {
                 strings.add(stringBuilder.toString());
                 strings.add(String.valueOf(expression.charAt(m)));
                 stringBuilder.setLength(0);
-                System.out.println("Operator found:" + expression.charAt(m));
-                System.out.println("Adding values to list:" + strings);
             }
             m++;
         }
         System.out.println(strings);
         int i = 0;
         while (isStringContainingOperator(strings)) {
-            System.out.println("Inside while loop");
-            System.out.println("Value of i:" + i + " and element is:" + strings.get(i));
             String lookingForOperator = null;
             if (strings.contains(Constant.MULTIPLY_OPERATOR)) {
                 lookingForOperator = Constant.MULTIPLY_OPERATOR;
@@ -132,9 +124,6 @@ public class MainViewModel extends ViewModel {
             } else if (strings.contains(Constant.SUBTRACT_OPERATOR)) {
                 lookingForOperator = Constant.SUBTRACT_OPERATOR;
             }
-            System.out.println("Value of i is operator:" + isOperator(strings.get(i)));
-            System.out.println("Looking for operator:" + lookingForOperator);
-            System.out.println("Are we looking for this operator:" + lookingForOperator.equals(strings.get(i)));
             try {
                 if (isOperator(strings.get(i)) && lookingForOperator.equals(strings.get(i))) {
                     System.out.println("This is operator");
@@ -156,8 +145,6 @@ public class MainViewModel extends ViewModel {
                             } else {
                                 secondMultiplyOperand = Double.parseDouble(String.valueOf(strings.get(i + 1)));
                             }
-                            System.out.println("Multiply:firstMultiplyOperand:" + firstMultiplyOperand + ",secondMultiplyOperand:" + secondMultiplyOperand);
-                            System.out.println("Previous strings list:" + strings);
                             double product = firstMultiplyOperand * secondMultiplyOperand;
                             if (isFirstOperandNegative) {
                                 strings.set(i - 1, String.valueOf(Math.abs(product)));
@@ -176,13 +163,34 @@ public class MainViewModel extends ViewModel {
                             break;
 
                         case Constant.ADD_OPERATOR:
-                            double firstAddOperand = Double.parseDouble(String.valueOf(strings.get(i - 1)));
-                            double secondAddOperand = Double.parseDouble(String.valueOf(strings.get(i + 1)));
-                            System.out.println("Multiply:firstAddOperand:" + firstAddOperand + ",secondAddOperand:" + secondAddOperand);
-                            System.out.println("Previous strings list:" + strings);
+                            double firstAddOperand, secondAddOperand;
+                            boolean isFirstAddOperandNegative;
+                            if (i != 1 && strings.get(i - 2).equals("-")) {
+                                firstAddOperand = Double.parseDouble("-" + strings.get(i - 1));
+                                isFirstAddOperandNegative = true;
+                            } else {
+                                isFirstAddOperandNegative = false;
+                                firstAddOperand = Double.parseDouble(String.valueOf(strings.get(i - 1)));
+                            }
+                            if (strings.get(i + 1).equals("-")) {
+                                secondAddOperand = Double.parseDouble("-" + strings.get(i + 2));
+                                strings.remove(i);
+                            } else {
+                                secondAddOperand = Double.parseDouble(String.valueOf(strings.get(i + 1)));
+                            }
+                            double sum = firstAddOperand + secondAddOperand;
+                            if (isFirstAddOperandNegative) {
+                                strings.set(i - 1, String.valueOf(Math.abs(sum)));
+                                if (sum < 0) {
+                                    strings.set(i - 2, "-");
+                                } else {
+                                    strings.set(i - 2, "+");
+                                }
+                            } else {
+                                strings.set(i - 1, String.valueOf(sum));
+                            }
                             strings.remove(i);
                             strings.remove(i);
-                            strings.set(i - 1, String.valueOf(firstAddOperand + secondAddOperand));
                             System.out.println("New strings list:" + strings);
                             i = 0;
                             break;
@@ -190,8 +198,6 @@ public class MainViewModel extends ViewModel {
                         case Constant.DIVIDE_OPERATOR:
                             double firstDivideOperand = Double.parseDouble(String.valueOf(strings.get(i - 1)));
                             double secondDivideOperand = Double.parseDouble(String.valueOf(strings.get(i + 1)));
-                            System.out.println("Multiply:firstDivideOperand:" + firstDivideOperand + ",secondDivideOperand:" + secondDivideOperand);
-                            System.out.println("Previous strings list:" + strings);
                             strings.remove(i);
                             strings.remove(i);
                             if (secondDivideOperand == 0) {
@@ -205,8 +211,6 @@ public class MainViewModel extends ViewModel {
                         case Constant.SUBTRACT_OPERATOR:
                             double firstSubtractOperand = Double.parseDouble(String.valueOf(strings.get(i - 1)));
                             double secondSubtractOperand = Double.parseDouble(String.valueOf(strings.get(i + 1)));
-                            System.out.println("Multiply:firstSubtractOperand:" + firstSubtractOperand + ",secondSubtractOperand:" + secondSubtractOperand);
-                            System.out.println("Previous strings list:" + strings);
                             strings.remove(i);
                             strings.remove(i);
                             strings.set(i - 1, String.valueOf(firstSubtractOperand - secondSubtractOperand));
@@ -218,7 +222,7 @@ public class MainViewModel extends ViewModel {
                     i++;
                     System.out.println("In else:Value of i:" + i);
                 }
-            } catch (IndexOutOfBoundsException e) {
+            } catch (IndexOutOfBoundsException | NumberFormatException e) {
                 return "Invalid expression";
             }
         }
